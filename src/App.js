@@ -1,6 +1,7 @@
 
 import React,{useState} from 'react'
 import './App.css';
+import {numbers, upperCaseLetters,lowerCaseLetters,specialCharacters} from './character'
 function App() {
 
   const [password,setPassword]= useState('')
@@ -9,6 +10,38 @@ function App() {
   const [includeLowerCase,setIncludeLowerCase]=useState(false);
   const [includeNumbers,setIncludeNumbers]=useState(false);
   const[includeSymbols,setIncludeSymbols]=useState(false);
+
+  const handleGeneratePassword=(e)=>{
+    let characterList= ''
+    if(includeLowerCase){
+      characterList = characterList + lowerCaseLetters
+    }
+    if(includeUpperCase){
+
+      characterList = characterList + upperCaseLetters
+    }
+    if(includeNumbers){
+      characterList=characterList + numbers
+    }
+
+    if(includeSymbols){
+
+      characterList=characterList+specialCharacters
+    }
+    setPassword(createPassword(characterList))
+  }
+
+  const createPassword =(characterList) =>
+  {
+    let password= ''
+    const characterListLength=characterList.length
+    for(let i=0;i<passwordLength;i++)
+    {
+      const characterIndex= Math.round(Math.random()*characterListLength)
+      password=password+characterList.charAt(characterIndex)
+    }
+    return password;
+  }
   return (
     <div className="App">
      <div className="container">
@@ -56,7 +89,7 @@ name="uppercase-letters"
 <label htmlFor="lowercase-letters">Includes Lower Case Letters</label>
 <input 
 checked={includeLowerCase}
-onChange={(e)=>setIncludeUpperCase(e.target.checked)}
+onChange={(e)=>setIncludeLowerCase(e.target.checked)}
 type="checkbox"
  id="lowercase-letters" 
  name="lowercase-letters" 
@@ -90,7 +123,7 @@ name="includes-symbols"
  min="10"></input>
 </div>
 
-<button className="generator_btn">Generate Password</button>
+<button onClick={handleGeneratePassword} className="generator_btn">Generate Password</button>
 
      </div>
      </div>  
