@@ -1,7 +1,10 @@
 
-import React,{useState} from 'react'
+import React,{useState} from 'react';
+import { toast,ToastContainer } from 'react-toastify';
 import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
 import {numbers, upperCaseLetters,lowerCaseLetters,specialCharacters} from './character'
+import {COPY_SUCCESS} from './message';
 function App() {
 
   const [password,setPassword]= useState('')
@@ -12,6 +15,11 @@ function App() {
   const[includeSymbols,setIncludeSymbols]=useState(false);
 
   const handleGeneratePassword=(e)=>{
+
+    if(!includeUpperCase && !includeLowerCase && !includeNumbers && !includeSymbols)
+    {
+      notify('Select atleast one option ',true)
+    }
     let characterList= ''
     if(includeLowerCase){
       characterList = characterList + lowerCaseLetters
@@ -42,6 +50,54 @@ function App() {
     }
     return password;
   }
+
+  const copyToClipboard=()=>{
+    const newTextArea=document.createElement('textarea');
+    newTextArea.innerText=password
+    document.body.appendChild(newTextArea)
+    newTextArea.select()
+    document.execCommand('copy')
+    newTextArea.remove()
+
+  }
+  const notify=(message,hasError=false)=>{
+    if(hasError){
+      toast.error(message, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
+    else{
+      toast(message, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
+      
+  }
+  const handleCopyPassworrd=(e)=>{
+    if(password==='')
+    {
+      notify('Nothing to copy',true)
+    }
+    else{
+      copyToClipboard()
+      notify(COPY_SUCCESS)
+    }
+   
+  }
+
+  
   return (
     <div className="App">
      <div className="container">
@@ -51,7 +107,7 @@ function App() {
        </h2>
        <div className="generator_password">
        <h3>{password} </h3> 
-      <button className="copy_btn">
+      <button onClick={handleCopyPassworrd}className="copy_btn">
         <i className='far fa-clipboard'></i>
       </button>
        </div>
@@ -124,7 +180,17 @@ name="includes-symbols"
 </div>
 
 <button onClick={handleGeneratePassword} className="generator_btn">Generate Password</button>
-
+<ToastContainer
+position="top-center"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+/>
      </div>
      </div>  
      </div>
